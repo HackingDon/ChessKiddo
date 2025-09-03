@@ -142,7 +142,7 @@ const Tournaments = () => {
           }}
           className="d-flex justify-content-center mb-5 mt-4 tourns"
         >
-          <div className="w-75 border border-secondary d-flex align-items-center justify-content-center h-100">
+          <div className="w-75 border border-secondary d-flex align-items-center justify-content-center h-100 bg-secondary text-white">
             <p className="fs-3">{file.name}</p>
           </div>
         </div>
