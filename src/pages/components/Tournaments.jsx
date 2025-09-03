@@ -140,8 +140,7 @@ const Tournaments = () => {
             downloadFile(file.file_name);
             handleOpenSnack("Please Wait for file download", "warning");
           }}
-          className="d-flex justify-content-center mb-5 mt-4"
-          style={{ height: 200, cursor: "pointer" }}
+          className="d-flex justify-content-center mb-5 mt-4 tourns"
         >
           <div className="w-75 border border-secondary d-flex align-items-center justify-content-center h-100">
             <p className="fs-3">{file.name}</p>

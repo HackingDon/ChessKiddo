@@ -65,3 +65,9 @@ footer {
   width: 150px !important;
   background-color: #000 !important;
 }
+.tourns {
+  height: 200;
+  cursor: "pointer";
+  background: url("./assets/tournsbg.webp");
+  background-size: cover;
+}
