@@ -11,6 +11,7 @@ import piece1 from "../../../assets/pieces.png";
 import piece2 from "../../../assets/p.png";
 import { useEffect, useRef, useState } from "react";
 import { getUser, fetchPdfs, downloadFile } from "../../../utils/commonHelper";
+import moment from "moment";
 
 const Student = () => {
   const sliderRef = useRef(null);
@@ -138,26 +139,36 @@ const Student = () => {
             </TableRow>
           </TableHead>
           <TableBody>
-            {files.map((file, ind) => (
-              <TableRow key={ind}>
-                <TableCell>{file.created_at}</TableCell>
-                <TableCell>{file.file_name}</TableCell>
-                <TableCell>
-                  <a className="y-link" href={file.link} target="blank">
-                    {file.link}
-                  </a>
-                </TableCell>
-                <TableCell>
-                  <Button
-                    className="download"
-                    onClick={() => downloadFile(file.file_name)}
-                    variant="outlined"
-                  >
-                    Download
-                  </Button>
+            {files.length > 0 ? (
+              files.map((file, ind) => (
+                <TableRow key={ind}>
+                  <TableCell>
+                    {moment(file.created_at).format("DD/MM/YYYY")}
+                  </TableCell>
+                  <TableCell>{file.file_name.split("/")[1]}</TableCell>
+                  <TableCell>
+                    <a className="y-link" href={file.link} target="blank">
+                      {file.link}
+                    </a>
+                  </TableCell>
+                  <TableCell>
+                    <Button
+                      className="download"
+                      onClick={() => downloadFile(file.file_name)}
+                      variant="outlined"
+                    >
+                      Download
+                    </Button>
+                  </TableCell>
+                </TableRow>
+              ))
+            ) : (
+              <TableRow>
+                <TableCell colspan={4} className="text-danger text-center">
+                  No data Found
                 </TableCell>
               </TableRow>
-            ))}
+            )}
           </TableBody>
         </Table>
       </div>

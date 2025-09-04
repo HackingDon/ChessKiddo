@@ -68,6 +68,10 @@ footer {
 .tourns {
   height: 200;
   cursor: "pointer";
+}
+.tourns-bg {
   background: url("./assets/tournsbg.webp");
   background-size: cover;
+  background-position: center;
+  height: 200px !important;
 }

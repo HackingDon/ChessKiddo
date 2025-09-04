@@ -134,19 +134,24 @@ const Tournaments = () => {
           </Button>
         </div>
       )}
-      {state.files.map((file) => (
-        <div
-          onClick={() => {
-            downloadFile(file.file_name);
-            handleOpenSnack("Please Wait for file download", "warning");
-          }}
-          className="d-flex justify-content-center mb-5 mt-4 tourns"
-        >
-          <div className="w-75 border border-secondary d-flex align-items-center justify-content-center h-100 bg-secondary text-white">
-            <p className="fs-3">{file.name}</p>
+      {state.files.length > 0 ? (
+        state.files.map((file, ind) => (
+          <div
+            key={ind}
+            onClick={() => {
+              downloadFile(file.file_name);
+              handleOpenSnack("Please Wait for file download", "warning");
+            }}
+            className="d-flex justify-content-center mb-5 mt-4 tourns"
+          >
+            <div className="w-75 border border-secondary d-flex align-items-center justify-content-center tourns-bg">
+              <p className="fs-3 text-white">{file.name}</p>
+            </div>
           </div>
-        </div>
-      ))}
+        ))
+      ) : (
+        <p className="text-center text-danger">No data Found</p>
+      )}
 
       <Modal open={state.open}>
         <Box
