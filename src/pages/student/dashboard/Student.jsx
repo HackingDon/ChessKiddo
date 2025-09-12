@@ -132,7 +132,7 @@ const Student = () => {
           <img className="king-img" src={piece1} alt="No Image" />
         </div>
         <div className="info-content">
-          <p className="m-0 fw-bold fs-1 wel-content">
+          <p className="m-0 fw-bold fs-5 wel-content">
             Welcome - {userData?.full_name}
           </p>
           <p className="student-name text-capitalize">
@@ -147,7 +147,7 @@ const Student = () => {
               Click here!
             </a>
           </p>
-          <p className="fs-5">
+          <p>
             Chess Analysis with Engine Calculation -{" "}
             <a href="https://www.chess.com/analysis" target="blank">
               Click here!
