@@ -27,6 +27,7 @@ import { supabaseClient } from "../../utils/superbase";
 import { downloadFile, fetchPdfs } from "../../utils/commonHelper";
 import { createClient } from "@supabase/supabase-js";
 import Tournaments from "../components/Tournaments";
+import moment from "moment";
 
 const Admin = () => {
   const [state, setState] = useState({
@@ -54,6 +55,7 @@ const Admin = () => {
     files: [],
     link: "",
     level: "beginner",
+    name: "",
   });
   const [error, setError] = useState({
     email: "",
@@ -108,10 +110,12 @@ const Admin = () => {
     }));
   };
 
-  const updatePdfTable = async (name, ref_link, level) => {
+  const updatePdfTable = async (name, ref_link, level, coname) => {
     const { data, error } = await supabaseAdmin
       .from("document")
-      .insert([{ file_name: name, link: ref_link, level: level }]);
+      .insert([
+        { file_name: name, link: ref_link, level: level, name: coname },
+      ]);
     return error;
   };
 
@@ -133,7 +137,12 @@ const Admin = () => {
             cacheControl: "3600",
             upsert: false,
           });
-        const error1 = await updatePdfTable(filePath, fileData.link, uploadFor);
+        const error1 = await updatePdfTable(
+          filePath,
+          fileData.link,
+          uploadFor,
+          fileData.name
+        );
         if (error || error1) {
           error
             ? handleOpenSnack(error.message, "error")
@@ -478,6 +487,7 @@ const Admin = () => {
                 <TableRow>
                   <TableCell>Date Uploaded</TableCell>
                   <TableCell>Document</TableCell>
+                  <TableCell>Notes</TableCell>
                   <TableCell>Reference URL</TableCell>
                   <TableCell>Actions</TableCell>
                 </TableRow>
@@ -486,14 +496,15 @@ const Admin = () => {
                 {state.files.length > 0 ? (
                   state.files.map((file, ind) => (
                     <TableRow key={ind}>
-                      <TableCell>{file.created_at}</TableCell>
-                      <TableCell>{file.file_name.split("/").pop()}</TableCell>
                       <TableCell>
-                        <a
-                          className="y-link"
-                          href="https://www.youtube.com/"
-                          target="blank"
-                        >
+                        {moment(file.created_at).format("DD/MM/YYYY") || "-"}
+                      </TableCell>
+                      <TableCell>
+                        {file.file_name.split("/").pop() || "-"}
+                      </TableCell>
+                      <TableCell>{file.name || "-"}</TableCell>
+                      <TableCell>
+                        <a className="y-link" href={file.link} target="blank">
                           {file.link}
                         </a>
                       </TableCell>
@@ -629,7 +640,7 @@ const Admin = () => {
                   <input
                     type="file"
                     multiple
-                    accept=".pdf"
+                    accept=".pdf .pgn"
                     onChange={(e) =>
                       setFileData((prev) => ({
                         ...prev,
@@ -645,7 +656,16 @@ const Admin = () => {
                 </div>
                 <TextField
                   size="small"
-                  // type="url"
+                  onChange={(e) =>
+                    setFileData((prev) => ({ ...prev, name: e.target.value }))
+                  }
+                  value={fileData.name}
+                  fullWidth
+                  label="Notes"
+                  className="mb-4"
+                />
+                <TextField
+                  size="small"
                   onChange={(e) =>
                     setFileData((prev) => ({ ...prev, link: e.target.value }))
                   }

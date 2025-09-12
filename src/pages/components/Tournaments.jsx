@@ -1,4 +1,4 @@
-import { faUpload } from "@fortawesome/free-solid-svg-icons";
+import { faTrash, faUpload } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Alert, Box, Button, Modal, Snackbar, TextField } from "@mui/material";
 import { useEffect, useState } from "react";
@@ -78,6 +78,31 @@ const Tournaments = () => {
     }));
   };
 
+  async function deleteFile(filePath) {
+    if (confirm("Are you sure want to delete?")) {
+      setState((prev) => ({ ...prev, isLoading: true }));
+      const { data, error } = await supabaseClient.storage
+        .from("pdfs") // bucket name
+        .remove([filePath]);
+
+      const { error1 } = await supabaseAdmin
+        .from("tourns")
+        .delete()
+        .eq("file_name", filePath);
+
+      setState((prev) => ({ ...prev, isLoading: false }));
+
+      if (error || error1) {
+        error
+          ? handleOpenSnack(error.message, "error")
+          : handleOpenSnack(error1.message, "error");
+      } else {
+        fetchPdfs();
+        handleOpenSnack("File Deleted Succesfully", "success");
+      }
+    }
+  }
+
   const uploadPdfs = async (e) => {
     e.preventDefault();
     let validateData = validate();
@@ -138,14 +163,29 @@ const Tournaments = () => {
         state.files.map((file, ind) => (
           <div
             key={ind}
-            onClick={() => {
-              downloadFile(file.file_name);
-              handleOpenSnack("Please Wait for file download", "warning");
-            }}
             className="d-flex justify-content-center mb-5 mt-4 tourns"
           >
-            <div className="w-75 border border-secondary d-flex align-items-center justify-content-center tourns-bg">
-              <p className="fs-3 text-white">{file.name}</p>
+            <div className="w-75 border border-secondary tourns-bg">
+              {localStorage.getItem("userid") ===
+                import.meta.env.VITE_ADMIN_ID && (
+                <div className="h-25 d-flex justify-content-end p-3">
+                  <FontAwesomeIcon
+                    className="text-danger"
+                    style={{ cursor: "pointer" }}
+                    onClick={() => deleteFile(file.file_name)}
+                    icon={faTrash}
+                  />
+                </div>
+              )}
+              <div
+                onClick={() => {
+                  downloadFile(file.file_name);
+                  handleOpenSnack("Please Wait for file download", "warning");
+                }}
+                className="d-flex w-100 align-items-center justify-content-center h-75"
+              >
+                <p className="fs-3">{file.name}</p>
+              </div>
             </div>
           </div>
         ))

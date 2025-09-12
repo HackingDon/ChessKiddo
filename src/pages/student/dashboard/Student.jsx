@@ -5,6 +5,7 @@ import {
   TableCell,
   TableHead,
   TableRow,
+  TextField,
 } from "@mui/material";
 import "./student.css";
 import piece1 from "../../../assets/pieces.png";
@@ -17,6 +18,22 @@ const Student = () => {
   const sliderRef = useRef(null);
   const [isLoading, setIsLoading] = useState(false);
   const [userData, setUserData] = useState(null);
+  const [selectedMonth, setSelectedMonth] = useState(new Date().getMonth());
+  const [filteredData, setFilteredData] = useState([]);
+  const months = [
+    "January",
+    "February",
+    "March",
+    "April",
+    "May",
+    "June",
+    "July",
+    "August",
+    "September",
+    "October",
+    "November",
+    "December",
+  ];
   const imgs = [
     {
       url: "https://upload.wikimedia.org/wikipedia/commons/thumb/5/57/Viswanathan_Anand_%282016%29_%28cropped%29.jpeg/640px-Viswanathan_Anand_%282016%29_%28cropped%29.jpeg",
@@ -95,6 +112,14 @@ const Student = () => {
     return () => clearInterval(interval);
   }, []);
 
+  useEffect(() => {
+    if (files.length > 0) {
+      setFilteredData(
+        files.filter((f) => new Date(f.created_at).getMonth() === selectedMonth)
+      );
+    }
+  }, [selectedMonth,files]);
+
   return (
     <div className="container-fluid p-0 chess-bg">
       {isLoading && (
@@ -107,12 +132,26 @@ const Student = () => {
           <img className="king-img" src={piece1} alt="No Image" />
         </div>
         <div className="info-content">
-          <p className="m-0 fw-bold fs-4">Welcome, {userData?.full_name}</p>
+          <p className="m-0 fw-bold fs-1 wel-content">
+            Welcome - {userData?.full_name}
+          </p>
           <p className="student-name text-capitalize">
             {userData?.level} Level
           </p>
           <p className="info-quote">
             "Chess is the gymnasium of the mind". -- Blaise Pascal
+          </p>
+          <p className="fs-5">
+            Play a Chess -{" "}
+            <a href="https://lichess.org/" target="blank">
+              Click here!
+            </a>
+          </p>
+          <p className="fs-5">
+            Chess Analysis with Engine Calculation -{" "}
+            <a href="https://www.chess.com/analysis" target="blank">
+              Click here!
+            </a>
           </p>
         </div>
         <div className="info-img pe-xl-5">
@@ -129,23 +168,40 @@ const Student = () => {
       </div>
       <div className="p-3">
         <h3>Learning Sources:</h3>
+        <TextField
+          select
+          size="small"
+          value={selectedMonth}
+          style={{ width: "200px" }}
+          className="mb-4"
+          onChange={(e) => setSelectedMonth(parseInt(e.target.value))}
+          slotProps={{ select: { native: true } }}
+        >
+          {months.map((month, ind) => (
+            <option key={ind} value={ind}>
+              {month}
+            </option>
+          ))}
+        </TextField>
         <Table className="table table-bordered table-striped custom-table">
           <TableHead>
             <TableRow>
               <TableCell>Date Uploaded</TableCell>
               <TableCell>Document</TableCell>
+              <TableCell>Notes</TableCell>
               <TableCell>Reference URL</TableCell>
               <TableCell>Actions</TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
-            {files.length > 0 ? (
-              files.map((file, ind) => (
+            {filteredData.length > 0 ? (
+              filteredData.map((file, ind) => (
                 <TableRow key={ind}>
                   <TableCell>
                     {moment(file.created_at).format("DD/MM/YYYY")}
                   </TableCell>
                   <TableCell>{file.file_name.split("/")[1]}</TableCell>
+                  <TableCell>{file.name || "-"}</TableCell>
                   <TableCell>
                     <a className="y-link" href={file.link} target="blank">
                       {file.link}
@@ -164,7 +220,7 @@ const Student = () => {
               ))
             ) : (
               <TableRow>
-                <TableCell colspan={4} className="text-danger text-center">
+                <TableCell colspan={5} className="text-danger text-center">
                   No data Found
                 </TableCell>
               </TableRow>

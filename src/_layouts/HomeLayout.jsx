@@ -13,8 +13,8 @@ const HomeLayout = (props) => {
 
   const handleOpenMenu = (target, from) => {
     from === "contact"
-      ? setContact(["9673487483", "6472638723"])
-      : setContact(["basic@gmail.com"]);
+      ? setContact(["6379175193", "9003521224"])
+      : setContact(["chesskidoo37@gmail.com"]);
     setAnchorEl(target);
   };
   const logout = async () => {
